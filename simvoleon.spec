@@ -7,7 +7,7 @@
 Summary: Volume rendering library for Coin
 Name: simvoleon
 Version: 2.0.1
-Release: %mkrel 2
+Release: %mkrel 3
 License: GPL
 Group: System/Libraries
 URL: http://www.coin3d.org
