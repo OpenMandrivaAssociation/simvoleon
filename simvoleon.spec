@@ -1,7 +1,4 @@
 
-%define coin_includedir %(coin-config --includedir)
-%define coin_htmldir %(coin-config --datadir)/Coin2
-
 %define libname %mklibname simvoleon 40
 
 Summary: Volume rendering library for Coin
@@ -69,11 +66,11 @@ chmod +x cfg/doxy4win.pl
 
 %build
 %configure \
-	--includedir=%{coin_includedir} \
+	--includedir=%{_includedir} \
 	--disable-dependency-tracking \
 	--enable-man \
 	--enable-html \
-	htmldir=%{coin_htmldir}/SIMVoleon
+	htmldir=%{_datadir}/Coin2/SIMVoleon
 %make
 
 %install
@@ -96,10 +93,10 @@ rm -rf $RPM_BUILD_ROOT
 %files -n %libname-devel
 %defattr(-,root,root,-)
 %{_bindir}/*
-%{coin_includedir}/*
+%{_includedir}/*
 %{_libdir}/libSimVoleon.*a
 %{_libdir}/libSimVoleon*.so
 %{_datadir}/aclocal/simvoleon.m4
 %{_datadir}/Coin/conf
-%doc %{coin_htmldir}/*
+%doc %{_datadir}/Coin2/*
 
