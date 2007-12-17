@@ -20,7 +20,6 @@ Patch3: SIMVoleon-2.0.1-gcc4.1.diff
 BuildRequires: coin-devel
 BuildRequires: doxygen
 BuildRequires: mesaglu-devel
-BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root
 
 %description
 SIM Voleon is a software development system, in the form of an add-on library
