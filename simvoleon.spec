@@ -7,6 +7,7 @@ Version: 2.0.1
 Release: %mkrel 3
 License: GPL
 Group: System/Libraries
+BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-buildroot
 URL: http://www.coin3d.org
 Source: http://ftp.coin3d.org/coin/src/all/SIMVoleon-%{version}.tar.bz2
 
