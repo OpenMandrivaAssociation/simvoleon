@@ -4,7 +4,7 @@
 Summary: Volume rendering library for Coin
 Name: simvoleon
 Version: 2.0.1
-Release: %mkrel 6
+Release: %mkrel 7
 License: GPL
 Group: System/Libraries
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-buildroot
