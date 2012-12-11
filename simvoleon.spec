@@ -1,26 +1,29 @@
+%define name		simvoleon
+%define tarname		SIMVoleon
+%define major		40
+%define libname		%mklibname %{name} %{major}
+%define libnamedev	%mklibname %{name} %{major} -d
 
-%define libname %mklibname simvoleon 40
-
-Summary: Volume rendering library for Coin
-Name: simvoleon
-Version: 2.0.1
-Release: %mkrel 7
-License: GPL
-Group: System/Libraries
-BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-buildroot
-URL: http://www.coin3d.org
-Source: http://ftp.coin3d.org/coin/src/all/SIMVoleon-%{version}.tar.bz2
+Name:			%{name}
+Version:		2.0.1
+Release:		%mkrel 3
+Summary:		Volume rendering library for Coin
+License:		GPLv2
+Group:			System/Libraries
+URL:			http://www.coin3d.org
+Source0:		http://ftp.coin3d.org/coin/src/all/%{tarname}-%{version}.tar.bz2
 
 # Backport from 2.0.0:
-#  The 2.0.1 tarball lacks files.
-Patch0: SIMVoleon-2.0.1-doxyfixes.diff
-Patch1: SIMVoleon-2.0.1-simacros.diff
-Patch2: SIMVoleon-2.0.1-libtool.diff
-Patch3: SIMVoleon-2.0.1-gcc4.1.diff
+# The 2.0.1 tarball lacks files.
+Patch0:			SIMVoleon-2.0.1-doxyfixes.diff
+Patch1:			SIMVoleon-2.0.1-simacros.diff
+Patch2:			SIMVoleon-2.0.1-libtool.diff
+Patch3:			SIMVoleon-2.0.1-gcc4.1.diff
+Patch4:			simvoleon-2.0.1-mga-fix_here_doc-simvoleon-config.in.patch
 
-BuildRequires: coin-devel
-BuildRequires: doxygen
-BuildRequires: mesaglu-devel
+BuildRequires:		pkgconfig(Coin)
+BuildRequires:		pkgconfig(glu)
+BuildRequires:		doxygen
 
 %description
 SIM Voleon is a software development system, in the form of an add-on library
@@ -28,27 +31,26 @@ to Coin3D. SIM Voleon complements Coin's capabilities for polygon-based
 rendering with visualization of volumetric data sets, by providing so-called
 "volume rendering" technology.
 
+%package -n %{libname}
+Summary:		Development files for SIMVoleon
+Group:			System/Libraries
+Provides:		%{name} = %{version}-%{release}
 
-%package -n %libname
-Summary: Development files for SIMVoleon
-Group: System/Libraries
-Provides:  simvoleon = %{version}-%{release}
-
-%description -n %libname
+%description -n %{libname}
 SIM Voleon is a software development system, in the form of an add-on library
 to Coin3D. SIM Voleon complements Coin's capabilities for polygon-based
 rendering with visualization of volumetric data sets, by providing so-called
 "volume rendering" technology.
 
+%package -n %{libnamedev}
+Summary:		Development files for SIMVoleon
+Requires:		%{libname} = %{version}-%{release}
+Requires:		coin-devel
+Provides:		%{name}-devel = %{version}-%{release}
+Provides:		%{tarname}-devel = %{version}-%{release}
+Group:			Development/C++
 
-%package -n %libname-devel
-Summary: Development files for SIMVoleon
-Requires: %{libname} = %{version}
-Requires: coin-devel >= 2.3.0
-Provides:  simvoleon-devel = %{version}-%{release}
-Group: Development/C++
-
-%description -n %libname-devel
+%description -n %{libnamedev}
 SIM Voleon is a software development system, in the form of an add-on library
 to Coin3D. SIM Voleon complements Coin's capabilities for polygon-based
 rendering with visualization of volumetric data sets, by providing so-called
@@ -56,51 +58,38 @@ rendering with visualization of volumetric data sets, by providing so-called
 
 
 %prep
-%setup -q -n SIMVoleon-%{version}
+%setup -q -n %{tarname}-%{version}
 %patch0 -p1
 %patch1 -p1
 %patch2 -p1
 %patch3 -p1
+%patch4 -p0 -b .simvoleon-2.0.1-mga-fix_here_doc-simvoleon-config.in.patch
 
 chmod +x cfg/doxy4win.pl
 
 %build
-%configure \
+./configure \
+	--prefix=%{_usr} \
+	--libdir=%{_libdir} \
 	--includedir=%{_includedir} \
 	--disable-dependency-tracking \
 	--enable-man \
 	--enable-html \
-	htmldir=%{_datadir}/Coin2/SIMVoleon
+	htmldir=%{_datadir}/Coin/SIMVoleon
 %make
 
 %install
-rm -rf $RPM_BUILD_ROOT
-# make DESTDIR=$RPM_BUILD_ROOT install
 %makeinstall_std
 
-%clean
-rm -rf $RPM_BUILD_ROOT
-
-%if %mdkversion < 200900
-%post -n %libname -p /sbin/ldconfig
-%endif
-
-%if %mdkversion < 200900
-%postun -n %libname -p /sbin/ldconfig
-%endif
-
-%files -n %libname
-%defattr(-,root,root,-)
+%files -n %{libname}
 %doc AUTHORS ChangeLog COPYING README NEWS
 %{_libdir}/libSimVoleon*.so.*
 
-%files -n %libname-devel
-%defattr(-,root,root,-)
+%files -n %{libnamedev}
 %{_bindir}/*
 %{_includedir}/*
-%{_libdir}/libSimVoleon.*a
 %{_libdir}/libSimVoleon*.so
 %{_datadir}/aclocal/simvoleon.m4
 %{_datadir}/Coin/conf
-%doc %{_datadir}/Coin2/*
-
+%{_datadir}/Coin/SIMVoleon/*
+#% doc %{_datadir}/Coin/*

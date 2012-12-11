@@ -1,0 +1,11 @@
+--- bin/simvoleon-config.in_orig	2012-02-21 16:21:46.861667954 +0000
++++ bin/simvoleon-config.in	2012-02-21 16:22:12.972067621 +0000
+@@ -104,7 +104,7 @@
+     s/ /-I/
+     p
+   }'
+-  EOF`
++EOF`
+   result=
+   for inc_path in $cppflags; do
+     additem=true
