@@ -6,7 +6,7 @@
 
 Name:			%{name}
 Version:		2.0.1
-Release:		%mkrel 3
+Release:		4
 Summary:		Volume rendering library for Coin
 License:		GPLv2
 Group:			System/Libraries
