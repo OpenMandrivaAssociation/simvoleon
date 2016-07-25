@@ -1,0 +1,32 @@
+diff -Naur SIMVoleon-2.0.1.orig/bin/simvoleon-config.in SIMVoleon-2.0.1/bin/simvoleon-config.in
+--- SIMVoleon-2.0.1.orig/bin/simvoleon-config.in	2003-06-30 14:51:32.000000000 +0200
++++ SIMVoleon-2.0.1/bin/simvoleon-config.in	2009-07-28 03:39:07.000000000 +0200
+@@ -50,6 +50,8 @@
+   --cxxflags
+   --ldflags
+   --libs
++  --includedir
++  --datadir
+   --msvcrt
+   --ac-subst <string> | <sourcefile.in>
+   --ac-desubst <sourcefile>
+@@ -130,6 +132,8 @@
+   --cxxflags)        echo "$cxxflags"      ;;
+   --ldflags)         echo "$ldflags"       ;;
+   --libs)            echo "$libs"          ;;
++  --includedir)      echo "$includedir"    ;;
++  --datadir)         echo "$datadir"       ;;
+   --msvcrt)          echo "$msvcrt"        ;;
+   --ac-subst)
+     shift
+diff -Naur SIMVoleon-2.0.1.orig/simvoleon.cfg.in SIMVoleon-2.0.1/simvoleon.cfg.in
+--- SIMVoleon-2.0.1.orig/simvoleon.cfg.in	2003-06-27 15:44:50.000000000 +0200
++++ SIMVoleon-2.0.1/simvoleon.cfg.in	2009-07-28 03:35:38.000000000 +0200
+@@ -9,5 +9,7 @@
+ ldflags="@SIMVOLEON_EXTRA_LDFLAGS@"
+ libs="@SIMVOLEON_EXTRA_LIBS@"
+ msvcrt="@SIMVOLEON_MSVC_LIBC@"
++datadir="@datadir@"
++includedir="@includedir@"
+ compiler="@COMPILER@"
+ compiler_is_gcc=@ac_compiler_gnu@

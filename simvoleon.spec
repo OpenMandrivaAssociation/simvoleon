@@ -6,7 +6,7 @@
 
 Name:			%{name}
 Version:		2.0.1
-Release:		4
+Release:		5
 Summary:		Volume rendering library for Coin
 License:		GPLv2
 Group:			System/Libraries
@@ -19,7 +19,8 @@ Patch0:			SIMVoleon-2.0.1-doxyfixes.diff
 Patch1:			SIMVoleon-2.0.1-simacros.diff
 Patch2:			SIMVoleon-2.0.1-libtool.diff
 Patch3:			SIMVoleon-2.0.1-gcc4.1.diff
-Patch4:			simvoleon-2.0.1-mga-fix_here_doc-simvoleon-config.in.patch
+Patch4:			SIMVoleon-2.0.1-bash4.0.diff
+Patch5:			SIMVoleon-2.0.1-pivy-hacks.diff
 
 BuildRequires:		pkgconfig(Coin)
 BuildRequires:		pkgconfig(glu)
@@ -59,15 +60,15 @@ rendering with visualization of volumetric data sets, by providing so-called
 
 %prep
 %setup -q -n %{tarname}-%{version}
-%patch0 -p1
-%patch1 -p1
-%patch2 -p1
-%patch3 -p1
-%patch4 -p0 -b .simvoleon-2.0.1-mga-fix_here_doc-simvoleon-config.in.patch
+%apply_patches
 
 chmod +x cfg/doxy4win.pl
 
 %build
+#% config_update
+find . -name config.guess -o -name config.sub | while read i ; do
+         [ -f /usr/share/libtool/config/"$(basename "$i")" ] && /bin/rm -f "$i" && /bin/cp -fv /usr/share/libtool/config/"$(basename "$i")" "$i" ; 
+done ;
 ./configure \
 	--prefix=%{_usr} \
 	--libdir=%{_libdir} \
