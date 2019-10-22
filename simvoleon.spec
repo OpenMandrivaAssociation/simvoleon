@@ -5,24 +5,17 @@
 %define libnamedev	%mklibname %{name} %{major} -d
 
 Name:			%{name}
-Version:		2.0.1
-Release:		5
+Version:		2.0.3
+Release:		1
 Summary:		Volume rendering library for Coin
 License:		GPLv2
 Group:			System/Libraries
 URL:			http://www.coin3d.org
-Source0:		http://ftp.coin3d.org/coin/src/all/%{tarname}-%{version}.tar.bz2
+Source0:		https://bitbucket.org/Coin3D/simvoleon/downloads/%{name}-%{version}-src.zip
+# bash-4 compatibility bugfix
+Patch0: SIMVoleon-2.0.1-bash4.0.diff
 
-# Backport from 2.0.0:
-# The 2.0.1 tarball lacks files.
-Patch0:			SIMVoleon-2.0.1-doxyfixes.diff
-Patch1:			SIMVoleon-2.0.1-simacros.diff
-Patch2:			SIMVoleon-2.0.1-libtool.diff
-Patch3:			SIMVoleon-2.0.1-gcc4.1.diff
-Patch4:			SIMVoleon-2.0.1-bash4.0.diff
-Patch5:			SIMVoleon-2.0.1-pivy-hacks.diff
-
-BuildRequires:		pkgconfig(Coin)
+BuildRequires:		pkgconfig(Coin4)
 BuildRequires:		pkgconfig(glu)
 BuildRequires:		doxygen
 
@@ -59,38 +52,29 @@ rendering with visualization of volumetric data sets, by providing so-called
 
 
 %prep
-%setup -q -n %{tarname}-%{version}
-%apply_patches
+%autosetup -p1 -n simvoleon
 
 chmod +x cfg/doxy4win.pl
 
 %build
-#% config_update
-find . -name config.guess -o -name config.sub | while read i ; do
-         [ -f /usr/share/libtool/config/"$(basename "$i")" ] && /bin/rm -f "$i" && /bin/cp -fv /usr/share/libtool/config/"$(basename "$i")" "$i" ; 
-done ;
-./configure \
-	--prefix=%{_usr} \
-	--libdir=%{_libdir} \
-	--includedir=%{_includedir} \
-	--disable-dependency-tracking \
-	--enable-man \
-	--enable-html \
-	htmldir=%{_datadir}/Coin/SIMVoleon
-%make
+%cmake -DSIMVOLEON_BUILD_DOCUMENTATION=TRUE \
+       -DSIMVOLEON_BUILD_TESTS=FALSE \
+       -DSIMVOLEON_BUILD_DOC_MAN=TRUE
+
+%make_build
 
 %install
-%makeinstall_std
+%make_install -C build
 
 %files -n %{libname}
 %doc AUTHORS ChangeLog COPYING README NEWS
-%{_libdir}/libSimVoleon*.so.*
+%{_libdir}/libSIMVoleon*.so.*
 
 %files -n %{libnamedev}
-%{_bindir}/*
 %{_includedir}/*
-%{_libdir}/libSimVoleon*.so
-%{_datadir}/aclocal/simvoleon.m4
-%{_datadir}/Coin/conf
-%{_datadir}/Coin/SIMVoleon/*
-#% doc %{_datadir}/Coin/*
+%{_libdir}/libSIMVoleon*.so
+%{_mandir}/man3/*
+%{_datadir}/doc/SIMVoleon/*
+%{_libdir}/cmake/SIMVoleon-%{version}/*.cmake
+%{_libdir}/pkgconfig/SIMVoleon.pc
+%{_datadir}/info/SIMVoleon2/build-options.*
