@@ -4,20 +4,21 @@
 %define libname		%mklibname %{name} %{major}
 %define libnamedev	%mklibname %{name} %{major} -d
 
-Name:			%{name}
-Version:		2.0.3
+Name:			simvoleon
+Version:		2.1.0
 Release:		1
 Summary:		Volume rendering library for Coin
 License:		GPLv2
 Group:			System/Libraries
-URL:			http://www.coin3d.org
-Source0:		https://bitbucket.org/Coin3D/simvoleon/downloads/%{name}-%{version}-src.zip
+URL:			https://coin3d.github.io/
+Source0:		https://github.com/coin3d/simvoleon/releases/download/simvoleon-%{version}/simvoleon-%{version}-src.tar.gz
 # bash-4 compatibility bugfix
 Patch0: SIMVoleon-2.0.1-bash4.0.diff
 
 BuildRequires:		pkgconfig(Coin4)
 BuildRequires:		pkgconfig(glu)
 BuildRequires:		doxygen
+BuildRequires:		cmake ninja
 
 %description
 SIM Voleon is a software development system, in the form of an add-on library
@@ -56,15 +57,16 @@ rendering with visualization of volumetric data sets, by providing so-called
 
 chmod +x cfg/doxy4win.pl
 
-%build
 %cmake -DSIMVOLEON_BUILD_DOCUMENTATION=TRUE \
        -DSIMVOLEON_BUILD_TESTS=FALSE \
-       -DSIMVOLEON_BUILD_DOC_MAN=TRUE
+       -DSIMVOLEON_BUILD_DOC_MAN=TRUE \
+	-G Ninja
 
-%make_build
+%build
+%ninja_build -C build
 
 %install
-%make_install -C build
+%ninja_install -C build
 
 %files -n %{libname}
 %doc AUTHORS ChangeLog COPYING README NEWS
@@ -74,7 +76,7 @@ chmod +x cfg/doxy4win.pl
 %{_includedir}/*
 %{_libdir}/libSIMVoleon*.so
 %{_mandir}/man3/*
-%{_datadir}/doc/SIMVoleon/*
-%{_libdir}/cmake/SIMVoleon-%{version}/*.cmake
+%{_libdir}/cmake/SIMVoleon-%{version}
 %{_libdir}/pkgconfig/SIMVoleon.pc
 %{_datadir}/info/SIMVoleon2/build-options.*
+%doc %{_docdir}/SIMVoleon
